@@ -2,11 +2,14 @@ import React, { useState } from "react";
 import "./Login.css";
 import { Button, FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import database from './firebase'
+import { useAppContext } from "./libs/contextLib";
+import { useHistory } from "react-router-dom";
 
-
-export const Login = () => {
+export const Login = (props) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const { userHasAuthenticated } = useAppContext();
+    const history = useHistory();
 
     function validateForm() {
         return email.length > 0 && password.length > 0;
@@ -14,6 +17,10 @@ export const Login = () => {
 
     function handleSubmit(event) {
         event.preventDefault();
+        userHasAuthenticated(true);
+        const {from} = props.location.state || {from: {pathname: '/'}};
+        history.push(from.pathname);
+        /*
         const user = {
             email: email,
             password: password,
@@ -24,7 +31,7 @@ export const Login = () => {
         })
         .catch(function(error) {
             console.error("Error adding document: ", error);
-        });
+        });*/
     }
 
     return (
