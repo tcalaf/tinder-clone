@@ -5,9 +5,12 @@ import ForumIcon from '@material-ui/icons/Forum';
 import IconButton from "@material-ui/core/IconButton";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos"
 import {Link, useHistory} from 'react-router-dom'
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import firebaseApp from '../firebase';
 
-const Header = ({backButton}) => {
+const Header = ({backButton, signOutButton}) => {
     const history = useHistory();
+
     return (
         <div className="header">
             {backButton ? (
@@ -15,9 +18,11 @@ const Header = ({backButton}) => {
                     <ArrowBackIosIcon fontSize="large" className="header__icon" />
                 </IconButton>
             ) : (
-                <IconButton>
-                    <PersonIcon className="header__icon" fontSize="large"/>
-                </IconButton>
+                <Link to="/profile">
+                    <IconButton>
+                        <PersonIcon className="header__icon" fontSize="large"/>
+                    </IconButton>
+                </Link>
             )}
 
             <Link to="/">
@@ -27,13 +32,19 @@ const Header = ({backButton}) => {
                 alt="app logo"/>
             </Link>
 
-            <Link to="/chat">
+            {signOutButton ? (
                 <IconButton>
-                    <ForumIcon className="header__icon" fontSize="large"/>
+                    <ExitToAppIcon className="header__icon" fontSize="large" onClick={() => firebaseApp.auth().signOut()}/>
                 </IconButton>
-            </Link>
+            ) : (
+                <Link to="/chat">
+                    <IconButton>
+                        <ForumIcon className="header__icon" fontSize="large"/>
+                    </IconButton>
+                </Link>
+            )}
+                
         </div>
     )
 }
-
 export default Header

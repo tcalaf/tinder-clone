@@ -3,17 +3,19 @@
 
 // If they are: they proceed to the page
 // If not: they are redirected to the login page.
-import React from 'react'
+import React, { useContext } from 'react'
 import { Redirect, Route } from 'react-router-dom'
+import { AuthContext } from './context/auth';
 
-export const PrivateRoute = ({component: Component, authed, ...rest }) => {
-
+export const PrivateRoute = ({component: Component, ...rest }) => {
+    const {currentUser} = useContext(AuthContext);
+    
     return (
         <Route
             {...rest}
-            render={(props) => authed === true
-                ? <Component {...props} />
-                : <Redirect to={{pathname: '/login', state: {from: props.location}}} />}
+            render={props => currentUser ? 
+                <Component {...props} />
+                : <Redirect to={{ pathname: '/login', state: { referer: props.location } }} />}
         />
     )
 }

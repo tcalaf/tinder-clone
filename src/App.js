@@ -1,32 +1,33 @@
-import React, {useState} from 'react';
+import React from 'react';
 import './App.css';
 import {BrowserRouter as Router, Switch, Route} from "react-router-dom";
-import { Login } from './Login';
-import { AppContext } from "./libs/contextLib";
-import {SignUp} from './SignUp';
-import {Error} from './Error'
-import {ChatPerson} from './ChatPerson'
-import {ChatsPage} from './ChatsPage'
-import {HomePage} from './HomePage'
+import { Login } from './pages/Login';
+import {SignUp} from './pages/SignUp';
+import {Error} from './pages/Error'
+import {ChatPerson} from './pages/ChatPerson'
+import {ChatsPage} from './pages/ChatsPage'
+import {HomePage} from './pages/HomePage'
 import {PrivateRoute} from './PrivateRoute'
+import {AuthProvider} from './context/auth'
+import {ProfilePage} from './pages/ProfilePage'
 
 function App() {
-  const [isAuthenticated, userHasAuthenticated] = useState(false);
-    
+
   return (
     <div className="App">
-      <AppContext.Provider value={{ isAuthenticated, userHasAuthenticated }}>
+      <AuthProvider>
         <Router>
           <Switch>
             <Route exact path="/signup" component={SignUp}/>
             <Route exact path="/login" component={Login}/>    
-            <PrivateRoute authed={isAuthenticated} exact path ="/chat/:person" component={ChatPerson}/>
-            <PrivateRoute authed={isAuthenticated} exact path ="/chat" component={ChatsPage} />
-            <PrivateRoute authed={isAuthenticated} exact path ="/" component={HomePage}/>
+            <PrivateRoute exact path ="/chat/:person" component={ChatPerson}/>
+            <PrivateRoute exact path ="/chat" component={ChatsPage} />
+            <PrivateRoute exact path ="/profile" component={ProfilePage}/>
+            <PrivateRoute exact path ="/" component={HomePage}/>
             <Route component={Error} />
           </Switch>
         </Router>
-      </AppContext.Provider>
+      </AuthProvider>
     </div>
   );
 }

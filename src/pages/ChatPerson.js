@@ -1,6 +1,6 @@
 import React from 'react'
-import Header from './Header';
-import ChatScreen from './ChatScreen'
+import Header from '../components/Header';
+import ChatScreen from '../components/ChatScreen'
 
 export const ChatPerson = () => {
     return (
