@@ -17,7 +17,7 @@ export const SignUp = () => {
     const handleSignUp = () => {
         try {
             firebaseApp.auth().createUserWithEmailAndPassword(email, password);
-            history.push('/');
+            history.push('/create');
         } catch(error) {
             alert(error);
         }

@@ -10,6 +10,7 @@ import {HomePage} from './pages/HomePage'
 import {PrivateRoute} from './PrivateRoute'
 import {AuthProvider} from './context/auth'
 import {ProfilePage} from './pages/ProfilePage'
+import {CreateProfile} from './pages/CreateProfile'
 
 function App() {
 
@@ -23,6 +24,7 @@ function App() {
             <PrivateRoute exact path ="/chat/:person" component={ChatPerson}/>
             <PrivateRoute exact path ="/chat" component={ChatsPage} />
             <PrivateRoute exact path ="/profile" component={ProfilePage}/>
+            <PrivateRoute exact path ="/create" component={CreateProfile}/>
             <PrivateRoute exact path ="/" component={HomePage}/>
             <Route component={Error} />
           </Switch>
