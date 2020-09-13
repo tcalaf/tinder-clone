@@ -8,7 +8,7 @@ import firebase from "firebase";
 const TinderCards = () => {
     const [people, setPeople] = useState([]);
     const { currentUser } = useContext(AuthContext);
-    const collection = firebaseApp.firestore().collection('people')
+    const collection = firebaseApp.firestore().collection('people');
 
     useEffect(() => {
 
@@ -19,11 +19,16 @@ const TinderCards = () => {
 
     const handleSwipeRight = (personId) => {
         collection.doc(currentUser.uid).update({matches: firebase.firestore.FieldValue.arrayUnion(personId)});
-       // let personMatches = [];
-      //  collection.doc(personId).get().then(doc => personMatches = doc.data().matches);
-      //  if(personMatches.includes(currentUser.uid)) {
-      //      console.log("match");
-      //  }
+        let personMatches;
+        let docRef = collection.doc(personId);
+        docRef.get().then(function(doc) {
+            if (doc.exists) {
+                personMatches = doc.data().matches;
+                if(personMatches.includes(currentUser.uid)) {
+                    console.log("match");
+                }             
+            }
+        })
     }
 
     return (
