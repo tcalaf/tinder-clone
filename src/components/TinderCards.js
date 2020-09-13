@@ -1,4 +1,4 @@
-import React,{ useState, useEffect, useContext } from 'react'
+import React,{ useState, useEffect, useContext} from 'react'
 import TinderCard from "react-tinder-card"
 import './TinderCards.css'
 import firebaseApp from '../firebase'
@@ -7,14 +7,20 @@ import firebase from "firebase";
 
 const TinderCards = () => {
     const [people, setPeople] = useState([]);
+    const [currentUserMatches, setCurrentUserMatches] = useState([]);
     const { currentUser } = useContext(AuthContext);
     const collection = firebaseApp.firestore().collection('people');
 
     useEffect(() => {
-
+        const collection = firebaseApp.firestore().collection('people');
         collection.get().then(collection => setPeople(collection.docs.map(doc => doc.data())));
-
-    }, [collection]);
+        const userDocRef = collection.doc(currentUser.uid);
+        userDocRef.get().then(function(doc) {
+            if (doc.exists) {
+                setCurrentUserMatches(doc.data().matches);
+            }
+        }) 
+    },[currentUser.uid]);
 
 
     const handleSwipeRight = (personId) => {
@@ -26,15 +32,34 @@ const TinderCards = () => {
                 personMatches = doc.data().matches;
                 if(personMatches.includes(currentUser.uid)) {
                     console.log("match");
+                    
                 }             
             }
         })
     }
 
+    const hasAlreadyBeenSwiped = (person) => {
+        if (!notYouself(person)) {
+            return false;
+        } else {
+            let personId = person.id;
+            console.log(currentUserMatches);
+            console.log(personId);
+            return !currentUserMatches.includes(personId) ? true : false;
+            //(currentUserMatches.includes(personId)) ? console.log('includes') : console.log("doesnt include");         
+        }
+    }
+
+    const notYouself = (person) => {
+        return person.id !== currentUser.uid ? true : false
+    }
+
+   // console.log(people);
+
     return (
         <div>
             <div className="tinderCards__cardContainer">
-                { people.filter(person => (person.id !== currentUser.uid? true : false))
+                { people.filter(hasAlreadyBeenSwiped)
                   .map((person) => (
                     <TinderCard className="swipe" key={person.name} 
                         onSwipe={direction => (direction === 'right' && handleSwipeRight(person.id))} 
