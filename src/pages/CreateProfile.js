@@ -18,7 +18,7 @@ export const CreateProfile = () => {
 
     const handleSignUp = () => {
         let uid = currentUser.uid;
-        firebaseApp.firestore().collection('people').doc(uid).set({id:uid, name:name, location:location, age:age, url:profilePic});
+        firebaseApp.firestore().collection('people').doc(uid).set({id:uid, name:name, location:location, age:age, url:profilePic, liked: [], disliked: []});
         history.push('/');
     }
 
