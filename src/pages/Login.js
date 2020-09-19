@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { Link, useHistory, Redirect } from 'react-router-dom';
 import { Card, Logo, Form, Input, Button } from '../components/AuthForm';
-import firebaseApp from '../firebase'
+import firebaseApp from '../services/firebase'
 import { AuthContext } from '../context/auth'
 
 export const Login = (props) => {

@@ -21,7 +21,7 @@ function App() {
           <Switch>
             <Route exact path="/signup" component={SignUp}/>
             <Route exact path="/login" component={Login}/>    
-            <PrivateRoute exact path ="/chat/:person" component={ChatPerson}/>
+            <PrivateRoute exact path ="/chat/:id" component={ChatPerson}/>
             <PrivateRoute exact path ="/chat" component={ChatsPage} />
             <PrivateRoute exact path ="/profile" component={ProfilePage}/>
             <PrivateRoute exact path ="/create" component={CreateProfile}/>

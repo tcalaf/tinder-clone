@@ -1,25 +1,32 @@
 import React, {useState} from 'react'
 import './ChatScreen.css'
 import { Avatar } from '@material-ui/core'
-const ChatScreen = () => {
+import firebaseApp from '../services/firebase'
+import { AuthContext } from '../context/auth'
+
+const ChatScreen = ({match}) => {
     const [input, setInput] = useState('');
     const [messages, setMessages] = useState([
         {
             name: 'Mira',
             image: 'https://cdn.knd.ro/media/521/2861/35027/18765588/2/mira2.jpg?height=1350&width=1080',
             message: 'Hey iubire ♥♥♥♥',
+            id:1
 
         }, 
         {
             name: 'Mira',
             image: 'https://cdn.knd.ro/media/521/2861/35027/18765588/2/mira2.jpg?height=1350&width=1080',
             message: 'Ce faaci?',
+            id:2
 
         },
         {
             message:'Hey! Bine',
+            id:3
         },
     ])
+
 
     const handleSend = e => {
         e.preventDefault();
@@ -29,10 +36,10 @@ const ChatScreen = () => {
 
     return (
         <div className="chatScreen">
-            <p className="chatScreen__timestamp">YOU MATCHED WITH MIRA ON 10/08/20</p>
+            <p className="chatScreen__timestamp">YOU MATCHED WITH {match.params.id} ON 10/08/20</p>
             {messages.map(message => (
                 message.name ? (
-                    <div class="chatScreen__message">
+                    <div className="chatScreen__message" key={message.id}>
                         <Avatar
                             className="chatScreen__image"
                             alt = {message.name}
@@ -41,7 +48,7 @@ const ChatScreen = () => {
                         <p className="chatScreen__text">{message.message}</p>
                     </div>
                 ) : (
-                    <div class="chatScreen__message">
+                    <div className="chatScreen__message" key={message.id}>
                         <p className="chatScreen__textUser">{message.message}</p>
                     </div>
                 )

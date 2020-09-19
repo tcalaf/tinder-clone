@@ -6,7 +6,7 @@ import IconButton from "@material-ui/core/IconButton";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos"
 import {Link, useHistory} from 'react-router-dom'
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import firebaseApp from '../firebase';
+import firebaseApp from '../services/firebase';
 
 const Header = ({backButton, signOutButton}) => {
     const history = useHistory();

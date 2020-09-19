@@ -2,7 +2,7 @@ import React, {useContext, useState} from 'react';
 import { Card, Logo, Form, Input, Button} from '../components/AuthForm';
 import { Link, useHistory} from 'react-router-dom';
 import { AuthContext } from '../context/auth';
-import firebaseApp from '../firebase'
+import firebaseApp from '../services/firebase'
 
 export const CreateProfile = () => {
     const { currentUser } = useContext(AuthContext);
@@ -18,7 +18,7 @@ export const CreateProfile = () => {
 
     const handleSignUp = () => {
         let uid = currentUser.uid;
-        firebaseApp.firestore().collection('people').doc(uid).set({id:uid, name:name, location:location, age:age, url:profilePic, liked: [], disliked: []});
+        firebaseApp.firestore().collection('people').doc(uid).set({id:uid, name:name, location:location, age:age, url:profilePic, swiped:[]});
         history.push('/');
     }
 

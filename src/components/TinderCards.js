@@ -1,7 +1,7 @@
 import React,{ useState, useEffect, useContext} from 'react'
 import TinderCard from "react-tinder-card"
 import './TinderCards.css'
-import firebaseApp from '../firebase'
+import firebaseApp from '../services/firebase'
 import { AuthContext } from '../context/auth'
 import firebase from "firebase";
 import alertify from 'alertifyjs';
@@ -9,9 +9,10 @@ import 'alertifyjs/build/css/alertify.css';
 
 const TinderCards = () => {
     const [people, setPeople] = useState([]);
-    const [currentUserLiked, setCurrentUserLiked] = useState([]);
+    const [currentUserAlreadySwiped, setCurrentUserAlreadySwiped] = useState([]);
     const { currentUser } = useContext(AuthContext);
     const collection = firebaseApp.firestore().collection('people');
+    const matches = firebaseApp.firestore().collection('matches').doc('matches');
 
     useEffect(() => {
         const collection = firebaseApp.firestore().collection('people');
@@ -19,32 +20,33 @@ const TinderCards = () => {
         const userDocRef = collection.doc(currentUser.uid);
         userDocRef.get().then(function(doc) {
             if (doc.exists) {
-                setCurrentUserLiked(doc.data().liked);
+                setCurrentUserAlreadySwiped(doc.data().swiped);
             }
         }) 
-    },[currentUser.uid]);
+    }, [currentUser.uid]);
 
     const popUpMatch = (person) => {
         let name = person.name;
         alertify.alert('Congrats!', name + " also likes you!", function(){ 
             alertify.success('You can now start chatting!'); 
         });
+        firebaseApp.firestore().collection('chats').doc(currentUser.uid).collection('users').doc(person.id).set({messages: []});
+        firebaseApp.firestore().collection('chats').doc(person.id).collection('users').doc(currentUser.uid).set({messages: []});
     }
 
     const handleSwipeRight = (person) => {
         const personId = person.id;
-        collection.doc(currentUser.uid).update({liked: firebase.firestore.FieldValue.arrayUnion(personId)});
-        let personMatches;
-        let docRef = collection.doc(personId);
-        docRef.get().then(function(doc) {
-            if (doc.exists) {
-                personMatches = doc.data().liked;
-                if(personMatches.includes(currentUser.uid)) {
-                    console.log("match");
-                    popUpMatch(person);
-                }             
+        collection.doc(currentUser.uid).update({swiped: firebase.firestore.FieldValue.arrayUnion(personId)}); //TODO Reuse for swipe left(must optimize)
+        matches.set({[currentUser.uid + '&' + personId] : true}, {merge: true});
+        matches.get().then(doc => {
+            const data = doc.data();
+            const match = personId + '&' + currentUser.uid;
+            if(data[match]) {
+                console.log("match");
+                popUpMatch(person);
             }
         })
+        
     }
 
     const hasAlreadyBeenSwiped = (person) => {
@@ -52,17 +54,13 @@ const TinderCards = () => {
             return false;
         } else {
             let personId = person.id;
-            //console.log(currentUserLiked);
-            //console.log(personId);
-            return !currentUserLiked.includes(personId) ? true : false;       
+            return !currentUserAlreadySwiped.includes(personId) ? true : false;       
         }
     }
 
     const notYouself = (person) => {
         return person.id !== currentUser.uid ? true : false
     }
-
-    // console.log(people);
 
     return (
         <div>
