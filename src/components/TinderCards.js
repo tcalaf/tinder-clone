@@ -30,8 +30,8 @@ const TinderCards = () => {
         alertify.alert('Congrats!', name + " also likes you!", function(){ 
             alertify.success('You can now start chatting!'); 
         });
-        firebaseApp.firestore().collection('chats').doc(currentUser.uid).collection('users').doc(person.id).set({messages: []});
-        firebaseApp.firestore().collection('chats').doc(person.id).collection('users').doc(currentUser.uid).set({messages: []});
+        firebaseApp.firestore().collection('chats').doc(currentUser.uid).collection('users').doc(person.id).set({messages: [], timestamp: Date.now()});
+        firebaseApp.firestore().collection('chats').doc(person.id).collection('users').doc(currentUser.uid).set({messages: [], timestamp: Date.now()});
     }
 
     const handleSwipeRight = (person) => {

@@ -11,9 +11,14 @@
     padding:20px;
 }
 
-.chatScreen__timestamp {
+.chatScreen__matchTimestamp {
     text-align: center;
     padding:20px;
+    color:gray;
+}
+
+.chatScreen__timestamp {
+    padding:10px;
     color:gray;
 }
 

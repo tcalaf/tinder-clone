@@ -1,55 +1,65 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import './ChatScreen.css'
 import { Avatar } from '@material-ui/core'
 import firebaseApp from '../services/firebase'
+import firebase from "firebase";
 import { AuthContext } from '../context/auth'
+import moment from 'moment'
 
 const ChatScreen = ({match}) => {
     const [input, setInput] = useState('');
-    const [messages, setMessages] = useState([
-        {
-            name: 'Mira',
-            image: 'https://cdn.knd.ro/media/521/2861/35027/18765588/2/mira2.jpg?height=1350&width=1080',
-            message: 'Hey iubire ♥♥♥♥',
-            id:1
+    const [messages, setMessages] = useState([]);
+    const { currentUser } = useContext(AuthContext);
+    const personId = match.params.id;
+    const [personImage, setPersonImage] = useState('');
+    const [personName, setPersonName] = useState('');
+    const [matchDate, setMatchDate] = useState(null);
 
-        }, 
-        {
-            name: 'Mira',
-            image: 'https://cdn.knd.ro/media/521/2861/35027/18765588/2/mira2.jpg?height=1350&width=1080',
-            message: 'Ce faaci?',
-            id:2
+    useEffect(() => {
+        const docRef = firebaseApp.firestore().collection('chats').doc(currentUser.uid).collection('users').doc(personId);
 
-        },
-        {
-            message:'Hey! Bine',
-            id:3
-        },
-    ])
+        docRef.get().then(doc => setMatchDate(doc.data().timestamp));
+
+        const unsubscribe = docRef.onSnapshot(doc => setMessages(doc.data().messages));
+        firebaseApp.firestore().collection('people').doc(personId).get().then(doc => {
+            setPersonImage(doc.data().url); setPersonName(doc.data().name);})
+
+
+        return () => {
+            unsubscribe();
+        }
+        
+
+    }, [currentUser.uid, personId]);
 
 
     const handleSend = e => {
         e.preventDefault();
-        setMessages([...messages, { message: input }]);
+        const newMessage = {data: input, uid:currentUser.uid, timestamp: Date.now()};
+        setMessages([...messages, newMessage]);
+        firebaseApp.firestore().collection('chats').doc(currentUser.uid).collection('users').doc(personId).update({messages: firebase.firestore.FieldValue.arrayUnion(newMessage)});
+        firebaseApp.firestore().collection('chats').doc(personId).collection('users').doc(currentUser.uid).update({messages: firebase.firestore.FieldValue.arrayUnion(newMessage)});
         setInput('');
     }
 
     return (
         <div className="chatScreen">
-            <p className="chatScreen__timestamp">YOU MATCHED WITH {match.params.id} ON 10/08/20</p>
+            <p className="chatScreen__matchTimestamp">You matched with {personName} on {moment(matchDate).format('LLL')}</p>
             {messages.map(message => (
-                message.name ? (
-                    <div className="chatScreen__message" key={message.id}>
+                message.uid !== currentUser.uid ? (
+                    <div className="chatScreen__message" key={message.timestamp}>
                         <Avatar
                             className="chatScreen__image"
-                            alt = {message.name}
-                            src = {message.image}
+                            alt = {personName}
+                            src = {personImage}
                         />
-                        <p className="chatScreen__text">{message.message}</p>
+                        <p className="chatScreen__text">{message.data}</p>
+                        <p className="chatScreen__timestamp">{moment(message.timestamp).format('LT')}</p>
                     </div>
                 ) : (
-                    <div className="chatScreen__message" key={message.id}>
-                        <p className="chatScreen__textUser">{message.message}</p>
+                    <div className="chatScreen__message" key={message.timestamp}>                    
+                        <p className="chatScreen__textUser">{message.data}</p>
+                        <p className="chatScreen__timestamp">{moment(message.timestamp).format('LT')}</p>
                     </div>
                 )
             ))}
