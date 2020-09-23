@@ -15,11 +15,15 @@ const TinderCards = () => {
         const collection = firebaseApp.firestore().collection('people');
         collection.get().then(collection => setPeople(collection.docs.map(doc => doc.data())));
         const userDocRef = collection.doc(currentUser.uid);
-        userDocRef.get().then(function(doc) {
+        const unsubscribe = userDocRef.onSnapshot(function(doc) {
             if (doc.exists) {
                 setCurrentUserAlreadySwiped(doc.data().swiped);
             }
         }) 
+
+        return () => {
+            unsubscribe();
+        }
     }, [currentUser.uid]);
 
     const hasAlreadyBeenSwiped = (person) => {
@@ -40,8 +44,8 @@ const TinderCards = () => {
             <div className="tinderCards__cardContainer">
                 { people.filter(hasAlreadyBeenSwiped)
                   .map((person) => (
-                    <>
-                        <TinderCard className="swipe" key={person.name} 
+                    <React.Fragment key={person.name} >
+                        <TinderCard className="swipe" 
                             onSwipe={direction => handleSwipe(direction, person, currentUser.uid)} 
                             preventSwipe={['up', 'down']}>
 
@@ -52,7 +56,7 @@ const TinderCards = () => {
                             </div>
                         </TinderCard>
                         <SwipeButtons person={person} currentUserUID={currentUser.uid}/>
-                    </>
+                    </React.Fragment>
                 ))}
             </div>
         </div>

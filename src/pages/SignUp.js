@@ -31,7 +31,7 @@ export const SignUp = () => {
 
     return (
         <Card>
-            <Logo src="https://www.getminute.com/wp-content/uploads/2016/06/signup-blue.png"/>
+            <Logo src="https://signup.com/mobileweb/2.0/images/build/mobile-organizers.png"/>
             <Form>
                 <Input type="email" value={email} onChange={e => {setEmail(e.target.value)}} placeholder="email" autoFocus/>
                 <Input type="password" value={password} onChange={e => {setPassword(e.target.value)}} placeholder="password" />
