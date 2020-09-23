@@ -21,6 +21,9 @@ const Chats = () => {
 
     }, [currentUser.uid]);
 
+
+    //TODO: change message format when last message was theirs, not yours
+
     return (
         <>
             <div className="chats">

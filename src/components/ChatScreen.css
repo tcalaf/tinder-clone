@@ -3,6 +3,8 @@
     background-color: lightgray;
     padding: 15px;
     border-radius: 20px;
+    overflow-wrap: break-word;
+    max-width: 200px;
 }
 
 .chatScreen__message {
@@ -27,7 +29,9 @@
     background-color: #29b3cd;
     padding: 15px;
     border-radius: 20px;
-    color: white
+    color: white;
+    overflow-wrap: break-word;
+    max-width: 200px;
 }
 
 .chatScreen__input {
