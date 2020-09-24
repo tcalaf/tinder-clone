@@ -25,4 +25,24 @@ a {
 
 .chat__timestamp {
     color: lightgray;
+    margin-left: 10px;
+    width: 70px;
+}
+
+.chat__userMessage * {
+    display: inline;
+    padding: 0px;
+}
+
+.chat__userMessage {
+    white-space: nowrap;
+}
+
+.chat__userText {
+    margin-left: 8px;
+}
+
+.chat__none {
+    color : rgba(85, 85, 56, 0.952);
+    margin-left: 8px;
 }

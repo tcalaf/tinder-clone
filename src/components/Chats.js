@@ -11,8 +11,12 @@ const Chats = () => {
 
     useEffect(() => {
 
+        const checkLastMessageSentByCurrentUser = (person) => {
+            return person.data().messages[person.data().messages.length - 1].uid === currentUser.uid ? true : false;
+        }
+
         const checkMessages = (person) => {
-            return person.data().messages.length ? true : false
+            return person.data().messages.length ? true : false;
         }
 
         const unsubscribe = firebaseApp.firestore().collection('chats').doc(currentUser.uid).collection('users').onSnapshot(snapshot => {
@@ -21,13 +25,18 @@ const Chats = () => {
             const usersHaveMessaged = users.filter(user => checkMessages(user));
             const usersHaveNotMessaged = users.filter(user => !checkMessages(user));
             usersHaveMessaged.sort((a, b) => b.data().messages[b.data().messages.length - 1].timestamp - a.data().messages[a.data().messages.length - 1].timestamp);
-            users = usersHaveMessaged.concat(usersHaveNotMessaged);
+            usersHaveNotMessaged.sort((a, b) => b.data().timestamp - a.data().timestamp);
 
-            users.map(person => firebaseApp.firestore().collection('people').doc(person.id).get().then(doc => setChats(prevChats => 
-                checkMessages(person)? 
-                    [...prevChats, {...doc.data(), ...{lastMessage: person.data().messages[person.data().messages.length - 1].data}, ...{lastMessageTime: moment(person.data().messages[person.data().messages.length - 1].timestamp).format('lll')}}]
-                :
-                    [...prevChats, {...doc.data(), ...{lastMessage: "No messages yet, tap here to create!"}, ...{lastMessageTime: ""}}]
+            usersHaveMessaged.map(person => firebaseApp.firestore().collection('people').doc(person.id).get().then(doc => setChats(prevChats => 
+                    [...prevChats, {
+                        ...doc.data(), 
+                        ...{lastMessage: person.data().messages[person.data().messages.length - 1].data}, 
+                        ...{lastMessageTime: moment(person.data().messages[person.data().messages.length - 1].timestamp).format('lll')},
+                        ...{lastMessageSentByCurrentUser: checkLastMessageSentByCurrentUser(person)}}]
+                )));
+
+            usersHaveNotMessaged.map(person => firebaseApp.firestore().collection('people').doc(person.id).get().then(doc => setChats(prevChats => 
+                    [...prevChats, {...doc.data(), ...{lastMessage: "No messages yet"}, ...{lastMessageTime: ""}, ...{lastMessageSentByCurrentUser: 'none'}}]
                 )));
             });
 
@@ -37,13 +46,12 @@ const Chats = () => {
 
     }, [currentUser.uid]);
 
-    //TODO: change message format when last message was theirs, not yours
-
     return (
         <>
             <div className="chats">
                 {chats.map(person => {
-                    return <Chat name={person.name} key={person.id} id={person.id} message={person.lastMessage} timestamp={person.lastMessageTime} profilePic={person.url} />
+                    return <Chat name={person.name} key={person.id} id={person.id} lastMessageSentByCurrentUser={person.lastMessageSentByCurrentUser}
+                    message={person.lastMessage} timestamp={person.lastMessageTime} profilePic={person.url} />
                 })}
             </div>
         </>
