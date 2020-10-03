@@ -16,6 +16,13 @@ const Form = styled.div`
   width: 100%;
 `;
 
+const Select = styled.select`
+  padding: 1rem;
+  border: 1px solid #999;
+  margin-bottom: 1rem;
+  font-size: 0.8rem;
+`;
+
 const Input = styled.input`
   padding: 1rem;
   border: 1px solid #999;
@@ -45,4 +52,4 @@ const Error = styled.div`
   background-color: red;
 `;
 
-export { Form, Input, Button, Logo, Card, Error };
+export { Form, Input, Button, Logo, Card, Error, Select };

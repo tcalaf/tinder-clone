@@ -11,20 +11,23 @@
 }
 
 .card > h3, h4 {
+
     color: white;
     line-height: 5px;
     text-align: center;
-
 }
 
-.tinderCards__cardContainer {
+.profile__tinderCard {
     display: flex;
     justify-content: center;
     margin-top: 5vh;
-    background-size: cover;
-    background-position: center;
 }
 
-.swipe {
-    position: absolute;
+.profile__header {
+    margin-top: 5vh;
+    padding: 30px;
+    text-align: center;
+    background: #404892;
+    color: white;
+    font-size: 30px;
 }

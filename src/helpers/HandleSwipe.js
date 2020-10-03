@@ -1,14 +1,12 @@
-import firebaseApp from '../services/firebase'
+import {usersCollection, matchesCollection, chatsCollection} from '../services/firebase'
 import firebase from "firebase";
 import alertify from 'alertifyjs';
 import 'alertifyjs/build/css/alertify.css';
 
-const usersCollection = firebaseApp.firestore().collection('people');
-const chatsCollection = firebaseApp.firestore().collection('chats');
-const matchesCollection = firebaseApp.firestore().collection('matches').doc('matches');
-
 const handleSwipe = (direction, person, currentUserUID) => {
-    usersCollection.doc(currentUserUID).update({swiped: firebase.firestore.FieldValue.arrayUnion(person.id)});
+    if(direction === 'right' || direction === 'left') {
+        usersCollection.doc(currentUserUID).update({swiped: firebase.firestore.FieldValue.arrayUnion(person.id)});
+    }
     if (direction === 'right') {
         handleSwipeRight(person, currentUserUID);
     }

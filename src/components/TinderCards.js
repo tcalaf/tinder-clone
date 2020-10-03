@@ -1,7 +1,7 @@
 import React,{ useState, useEffect, useContext} from 'react'
 import TinderCard from "react-tinder-card"
 import './TinderCards.css'
-import firebaseApp from '../services/firebase'
+import {usersCollection} from '../services/firebase'
 import { AuthContext } from '../context/auth'
 import SwipeButtons from "../components/SwipeButtons"
 import handleSwipe from "../helpers/HandleSwipe"
@@ -12,9 +12,8 @@ const TinderCards = () => {
     const { currentUser } = useContext(AuthContext);
 
     useEffect(() => {
-        const collection = firebaseApp.firestore().collection('people');
-        collection.get().then(collection => setPeople(collection.docs.map(doc => doc.data())));
-        const userDocRef = collection.doc(currentUser.uid);
+        usersCollection.get().then(collection => setPeople(collection.docs.map(doc => doc.data())));
+        const userDocRef = usersCollection.doc(currentUser.uid);
         const unsubscribe = userDocRef.onSnapshot(function(doc) {
             if (doc.exists) {
                 setCurrentUserAlreadySwiped(doc.data().swiped);
@@ -40,11 +39,11 @@ const TinderCards = () => {
     }
 
     return (
-        <div>
+        <div className="pe">
             <div className="tinderCards__cardContainer">
                 { people.filter(hasAlreadyBeenSwiped)
                   .map((person) => (
-                    <React.Fragment key={person.name} >
+                    <React.Fragment key={person.id} >
                         <TinderCard className="swipe" 
                             onSwipe={direction => handleSwipe(direction, person, currentUser.uid)} 
                             preventSwipe={['up', 'down']}>

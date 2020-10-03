@@ -12,4 +12,11 @@ const firebaseConfig = {
   };
 
 const firebaseApp = firebase.initializeApp(firebaseConfig);
+const usersCollection = firebaseApp.firestore().collection('users');
+const matchesCollection = firebaseApp.firestore().collection('matches').doc('matches');
+const chatsCollection = firebaseApp.firestore().collection('chats');
+const createdProfileCollection = firebaseApp.firestore().collection('createdProfile');
+const storage = firebaseApp.storage();
+
 export default firebaseApp;
+export {usersCollection, matchesCollection, chatsCollection, storage, createdProfileCollection};

@@ -1,12 +1,13 @@
 import React from 'react'
 import Header from '../components/Header';
+import Profile from '../components/Profile';
 
 export const ProfilePage = () => {
     
     return (
         <>
             <Header signOutButton/>
-            <h1>This is the profile page</h1>
+            <Profile/>
             
         </>
     )

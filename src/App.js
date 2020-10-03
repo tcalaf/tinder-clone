@@ -7,7 +7,7 @@ import {Error} from './pages/Error'
 import {ChatPerson} from './pages/ChatPerson'
 import {ChatsPage} from './pages/ChatsPage'
 import {HomePage} from './pages/HomePage'
-import {PrivateRoute} from './PrivateRoute'
+import {PrivateRoute} from './context/PrivateRoute'
 import {AuthProvider} from './context/auth'
 import {ProfilePage} from './pages/ProfilePage'
 import {CreateProfile} from './pages/CreateProfile'
@@ -24,7 +24,7 @@ function App() {
             <PrivateRoute exact path ="/chat/:id" component={ChatPerson}/>
             <PrivateRoute exact path ="/chat" component={ChatsPage} />
             <PrivateRoute exact path ="/profile" component={ProfilePage}/>
-            <PrivateRoute exact path ="/create" component={CreateProfile}/>
+            <Route exact path ="/createProfile" render={(props) => <CreateProfile {...props}/>}/>
             <PrivateRoute exact path ="/" component={HomePage}/>
             <Route component={Error} />
           </Switch>
